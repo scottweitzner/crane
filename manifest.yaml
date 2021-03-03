@@ -1,0 +1,7 @@
+---
+source:
+  kind: Git
+  git:
+    url: "sdfas"
+    version: "1.0"
+    
