@@ -6,7 +6,8 @@ import (
 	"github.com/scottweitzner/crane/common"
 )
 
-func CloneAndSwitchVersion(url string, version string) error {
+// CloneVersion clones a specific version of a repository
+func CloneVersion(url string, version string) error {
 
 	if _, err := git.PlainClone(common.GitClonePath, false, &git.CloneOptions{
 		URL:           url,
