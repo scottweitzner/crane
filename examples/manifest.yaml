@@ -1,0 +1,8 @@
+---
+source:
+  kind: Git
+  git:
+    source: 
+    version: 
+values:
+  sayHello: true
