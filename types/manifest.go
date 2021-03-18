@@ -15,7 +15,14 @@ const (
 )
 
 type Manifest struct {
-	Source DockerfileSource `yaml:"source"`
+	Source DockerfileSource       `yaml:"source"`
+	Values map[string]interface{} `yaml:"values"`
+	Output Output                 `yaml:"output"`
+}
+
+type Output struct {
+	Path      string `yaml:"path"`
+	Extension string `yaml:"extension"`
 }
 
 type DockerfileSource struct {
@@ -46,6 +53,10 @@ func ParseManifest(path string) (*Manifest, error) {
 				Path: "Dockerfile",
 			},
 		},
+		Output: Output{
+			Path:      "./crane",
+			Extension: ".Dockerfile",
+		},
 	}
 
 	if err = yaml.Unmarshal(configBytes, manifest); err != nil {
@@ -66,4 +77,8 @@ func ParseManifest(path string) (*Manifest, error) {
 	}
 
 	return manifest, nil
+}
+
+func (m *Manifest) FormOutputPath() string {
+	return fmt.Sprintf("%s%s", m.Output.Path, m.Output.Extension)
 }

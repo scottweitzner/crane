@@ -1,7 +1,8 @@
 package load
 
 import (
-	"fmt"
+	"os"
+	"text/template"
 
 	"github.com/scottweitzner/crane/common"
 	"github.com/scottweitzner/crane/types"
@@ -33,6 +34,23 @@ func NewLoadCommand() *cobra.Command {
 
 func (options *loadOptions) run() error {
 	manifest, err := types.ParseManifest(options.manifest)
-	fmt.Printf("%+v\n", manifest)
-	return err
+	if err != nil {
+		return err
+	}
+
+	template, err := template.ParseFiles(manifest.Source.LocalSource.Path)
+	if err != nil {
+		return err
+	}
+
+	outFile, err := os.Create(manifest.FormOutputPath())
+	if err != nil {
+		return err
+	}
+
+	if err = template.Execute(outFile, manifest.Values); err != nil {
+		return err
+	}
+
+	return nil
 }
