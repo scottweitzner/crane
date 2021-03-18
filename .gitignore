@@ -1,1 +1,9 @@
+# builds
+dist
+
+# mac
+.DS_Store
+
+# idea
+.idea 
 .vscode
