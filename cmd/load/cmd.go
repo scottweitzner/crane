@@ -38,7 +38,12 @@ func (options *loadOptions) run() error {
 		return err
 	}
 
-	template, err := template.ParseFiles(manifest.Source.LocalSource.Path)
+	dockerFilePath, err := manifest.FormSourcePath()
+	if err != nil {
+		return err
+	}
+
+	template, err := template.ParseFiles(dockerFilePath)
 	if err != nil {
 		return err
 	}

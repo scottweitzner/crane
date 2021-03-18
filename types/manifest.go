@@ -3,7 +3,10 @@ package types
 import (
 	"fmt"
 	"io/ioutil"
+	"strings"
 
+	"github.com/scottweitzner/crane/common"
+	"github.com/scottweitzner/crane/internal"
 	"gopkg.in/yaml.v3"
 )
 
@@ -38,6 +41,7 @@ type LocalSource struct {
 type GitSource struct {
 	URL     string `yaml:"url"`
 	Version string `yaml:"version"`
+	Path    string `yaml:"path"`
 }
 
 func ParseManifest(path string) (*Manifest, error) {
@@ -52,6 +56,9 @@ func ParseManifest(path string) (*Manifest, error) {
 			LocalSource: LocalSource{
 				Path: "Dockerfile",
 			},
+			GitSource: GitSource{
+				Path: "Dockerfile",
+			},
 		},
 		Output: Output{
 			Path:      "./crane",
@@ -63,6 +70,7 @@ func ParseManifest(path string) (*Manifest, error) {
 		return nil, err
 	}
 
+	// validations for source
 	switch manifest.Source.Kind {
 	case kindLocal:
 		if manifest.Source.LocalSource == (LocalSource{}) {
@@ -79,6 +87,19 @@ func ParseManifest(path string) (*Manifest, error) {
 	return manifest, nil
 }
 
-func (m *Manifest) FormOutputPath() string {
-	return fmt.Sprintf("%s%s", m.Output.Path, m.Output.Extension)
+func (manifest *Manifest) FormSourcePath() (string, error) {
+	switch manifest.Source.Kind {
+	case kindLocal:
+		return manifest.Source.LocalSource.Path, nil
+	case kindGit:
+		if err := internal.CloneAndSwitchVersion(manifest.Source.GitSource.URL, manifest.Source.GitSource.Version); err != nil {
+			return "", err
+		}
+		path := strings.TrimPrefix(manifest.Source.GitSource.Path, "/")
+		return fmt.Sprintf("%s/%s", common.GitClonePath, path), nil
+	}
+}
+
+func (manifest *Manifest) FormOutputPath() string {
+	return fmt.Sprintf("%s%s", manifest.Output.Path, manifest.Output.Extension)
 }
