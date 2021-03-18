@@ -25,6 +25,7 @@ func NewLoadCommand() *cobra.Command {
 		Short: "load up! create your dockerfile",
 		Long:  "load up! templates your dockerfiles according to the manifest",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			os.RemoveAll(common.GitClonePath) // wipe the temp clone directory
 			return common.RedWrapError(options.run())
 		},
 	}

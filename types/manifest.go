@@ -97,6 +97,8 @@ func (manifest *Manifest) FormSourcePath() (string, error) {
 		}
 		path := strings.TrimPrefix(manifest.Source.GitSource.Path, "/")
 		return fmt.Sprintf("%s/%s", common.GitClonePath, path), nil
+	default:
+		return "", fmt.Errorf("unknown source kind %s", manifest.Source.Kind)
 	}
 }
 

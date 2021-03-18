@@ -8,20 +8,9 @@ import (
 
 func CloneAndSwitchVersion(url string, version string) error {
 
-	r, err := git.PlainClone(common.GitClonePath, false, &git.CloneOptions{
-		URL: url,
-	})
-	if err != nil {
-		return err
-	}
-
-	w, err := r.Worktree()
-	if err != nil {
-		return err
-	}
-
-	if err = w.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.ReferenceName(version),
+	if _, err := git.PlainClone(common.GitClonePath, false, &git.CloneOptions{
+		URL:           url,
+		ReferenceName: plumbing.ReferenceName(version),
 	}); err != nil {
 		return err
 	}
