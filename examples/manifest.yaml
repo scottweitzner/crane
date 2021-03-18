@@ -2,8 +2,8 @@
 source:
   kind: Git
   git:
-    source: https://github.com/scottweitzner/crane
+    url: https://github.com/scottweitzner/crane
     version: refs/heads/feat/first-cut
     path: examples/Dockerfile
 values:
-  sayHello: true
+  sayHello: false
